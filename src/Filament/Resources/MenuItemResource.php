@@ -2,24 +2,24 @@
 
 namespace Dashed\DashedMenus\Filament\Resources;
 
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
 use Dashed\DashedCore\Classes\Sites;
+use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
+use Filament\Actions\DeleteBulkAction;
 use Dashed\DashedMenus\Models\MenuItem;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Dashed\DashedMenus\Filament\Resources\MenuItemResource\Pages\EditMenuItem;
 use Dashed\DashedMenus\Filament\Resources\MenuItemResource\Pages\ListMenuItems;
 use Dashed\DashedMenus\Filament\Resources\MenuItemResource\Pages\CreateMenuItem;
@@ -48,7 +48,7 @@ class MenuItemResource extends Resource
         ];
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         $menuItemId = request()->get('menuId', null);
 
@@ -78,7 +78,7 @@ class MenuItemResource extends Resource
                     });
         }
 
-        $schema = array_merge([
+        $newSchema = array_merge([
             Select::make('menu_id')
                 ->label('Kies een menu')
                 ->searchable()
@@ -138,10 +138,11 @@ class MenuItemResource extends Resource
 
         cms()->activateBuilderBlockClasses();
 
-        return $form
+        return $schema
             ->schema([
                 Section::make('Menu')
-                    ->schema(array_merge($schema, static::customBlocksTab('menuItemBlocks')))
+                    ->columnSpanFull()
+                    ->schema(array_merge($newSchema, static::customBlocksTab('menuItemBlocks')))
                     ->columns(2),
             ]);
     }
@@ -162,12 +163,12 @@ class MenuItemResource extends Resource
                     ->label('Sites')
                     ->getStateUsing(fn ($record) => implode(' | ', $record->site_ids)),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->button(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

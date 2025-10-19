@@ -3,8 +3,8 @@
 namespace Dashed\DashedMenus\Filament\Resources\MenuItemResource\Pages;
 
 use Dashed\DashedCore\Classes\Sites;
-use Filament\Actions\LocaleSwitcher;
 use Filament\Resources\Pages\CreateRecord;
+use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use Dashed\DashedMenus\Filament\Resources\MenuItemResource;
 use Dashed\DashedCore\Filament\Concerns\HasCreatableCMSActions;
 

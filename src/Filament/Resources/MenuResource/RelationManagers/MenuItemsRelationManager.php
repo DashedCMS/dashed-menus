@@ -2,21 +2,21 @@
 
 namespace Dashed\DashedMenus\Filament\Resources\MenuResource\RelationManagers;
 
-use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Dashed\DashedCore\Classes\Locales;
+use Filament\Actions\DeleteBulkAction;
 use Dashed\DashedMenus\Models\MenuItem;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\LocaleSwitcher;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
+use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use Filament\Resources\RelationManagers\RelationManager;
 use Dashed\DashedTranslations\Classes\AutomatedTranslation;
-use Filament\Resources\RelationManagers\Concerns\Translatable;
+use LaraZeus\SpatieTranslatable\Resources\RelationManagers\Concerns\Translatable;
 
 class MenuItemsRelationManager extends RelationManager
 {
@@ -26,16 +26,26 @@ class MenuItemsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                //
-            ]);
+        return $schema;
     }
 
     public function table(Table $table): Table
     {
+
+        $menuItems = MenuItem::all();
+
+        foreach ($menuItems as $menuItem) {
+            if ($menuItem->parent_menu_item_id) {
+                $parent = $menuItems->where('id', $menuItem->parent_menu_item_id)->first();
+                if (! $parent) {
+                    $menuItem->parent_menu_item_id = null;
+                    $menuItem->save();
+                }
+            }
+        }
+
         return $table
             ->columns([
                 TextColumn::make('name')
@@ -43,9 +53,9 @@ class MenuItemsRelationManager extends RelationManager
                     ->sortable()
                     ->getStateUsing(fn ($record) => $record->name(false))
                     ->searchable(),
-                TextColumn::make('parentMenuItem.name')
-                    ->label('Bovenliggende item')
-                    ->sortable(),
+//                TextColumn::make('parentMenuItem.name')
+//                    ->label('Bovenliggende item')
+//                    ->sortable(),
                 TextColumn::make('url')
                     ->label('URL')
                     ->getStateUsing(fn ($record) => str_replace(url('/'), '', $record->getUrl())),
@@ -58,7 +68,7 @@ class MenuItemsRelationManager extends RelationManager
                 //
             ])
             ->reorderable('order')
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->label('Bewerken')
                     ->icon('heroicon-o-pencil-square')
@@ -66,7 +76,7 @@ class MenuItemsRelationManager extends RelationManager
                     ->url(fn (MenuItem $record) => route('filament.dashed.resources.menu-items.edit', [$record])),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
@@ -81,7 +91,7 @@ class MenuItemsRelationManager extends RelationManager
                     ->icon('heroicon-m-language')
                     ->label('Vertaal menu')
                     ->visible(AutomatedTranslation::automatedTranslationsEnabled())
-                    ->form([
+                    ->schema([
                         Select::make('from_locale')
                             ->options(Locales::getLocalesArray())
                             ->preload()

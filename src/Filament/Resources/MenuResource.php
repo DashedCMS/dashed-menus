@@ -2,20 +2,22 @@
 
 namespace Dashed\DashedMenus\Filament\Resources;
 
-use Filament\Forms\Set;
-use Filament\Forms\Form;
+use UnitEnum;
+use BackedEnum;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
 use Dashed\DashedMenus\Models\Menu;
-use Filament\Forms\Components\Section;
-use Filament\Tables\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\EditMenu;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\ListMenu;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\CreateMenu;
@@ -28,8 +30,8 @@ class MenuResource extends Resource
     protected static ?string $model = Menu::class;
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationIcon = 'heroicon-o-bars-3';
-    protected static ?string $navigationGroup = 'Content';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-bars-3';
+    protected static string | UnitEnum | null $navigationGroup = 'Content';
     protected static ?string $navigationLabel = 'Menu\'s';
     protected static ?string $label = 'Menu';
     protected static ?string $pluralLabel = 'Menu\'s';
@@ -41,11 +43,11 @@ class MenuResource extends Resource
         ];
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Section::make('Menu')
+                Section::make('Menu')->columnSpanFull()
                     ->schema([
                         TextInput::make('name')
                             ->label('Name')
@@ -76,12 +78,12 @@ class MenuResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->button(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

@@ -174,7 +174,7 @@ class MenuItem extends Model
         });
     }
 
-    public function name(bool $cache = true): string
+    public function name(bool $cache = true): ?string
     {
         if (! $cache) {
             Cache::forget("menuitem-name-$this->id-" . App::getLocale());
