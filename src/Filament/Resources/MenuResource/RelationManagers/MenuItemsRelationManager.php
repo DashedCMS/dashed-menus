@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedMenus\Filament\Resources\MenuResource\RelationManagers;
 
+use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Schemas\Schema;
@@ -116,6 +117,62 @@ class MenuItemsRelationManager extends RelationManager
                             ->success()
                             ->send();
                     }),
+                self::copyAction(),
             ]);
+    }
+
+    public function copyAction(): Action
+    {
+        return Action::make('copy')
+            ->icon('heroicon-o-document-duplicate')
+            ->label('Kopiëren')
+            ->visible(count(Locales::getLocalesArray()) > 1)
+            ->schema([
+                TextEntry::make('description')
+                    ->state('Hiermee kopieer je alle inhoudt naar andere talen. Dit kan even duren.'),
+                Select::make('to_locales')
+                    ->options(Locales::getLocalesArray())
+                    ->preload()
+                    ->searchable()
+                    ->default(collect(Locales::getLocalesArrayWithoutCurrent())->keys()->toArray())
+                    ->required()
+                    ->label('Naar talen')
+                    ->multiple(),
+            ])
+            ->action(function (array $data) {
+
+                foreach($this->ownerRecord->menuItems as $menuItem){
+                    foreach ($menuItem->translatable as $column) {
+                        $textToTranslate = $menuItem->getTranslation($column, $this->activeLocale);
+                        foreach ($data['to_locales'] as $locale) {
+                            $menuItem->setTranslation($column, $locale, $textToTranslate);
+                        }
+                    }
+
+                    $menuItem->save();
+
+                    if ($menuItem->customBlocks) {
+                        $translatableCustomBlockColumns = [
+                            'blocks',
+                        ];
+
+                        foreach ($translatableCustomBlockColumns as $column) {
+                            $textToTranslate = $menuItem->customBlocks->getTranslation($column, $this->activeLocale);
+                            foreach ($data['to_locales'] as $locale) {
+                                $menuItem->customBlocks->setTranslation($column, $locale, $textToTranslate);
+                            }
+                        }
+
+                        $menuItem->customBlocks->save();
+                    }
+                }
+
+                Notification::make()
+                    ->title('Item is gekopieerd naar andere talen')
+                    ->success()
+                    ->send();
+
+                return redirect()->to(request()->header('Referer'));
+            });
     }
 }
