@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedMenus\Filament\Resources;
 
+use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
 use Filament\Actions\EditAction;
@@ -168,11 +169,7 @@ class MenuItemResource extends Resource
                     ->button(),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->toolbarActions(ToolbarActions::getActions());
     }
 
     public static function getRelations(): array

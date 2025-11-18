@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedMenus\Filament\Resources\MenuResource\RelationManagers;
 
+use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
@@ -77,11 +78,7 @@ class MenuItemsRelationManager extends RelationManager
                     ->url(fn (MenuItem $record) => route('filament.dashed.resources.menu-items.edit', [$record])),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
+            ->toolbarActions(ToolbarActions::getActions())
             ->headerActions([
                 Action::make('create')
                     ->label('Menu item aanmaken')
