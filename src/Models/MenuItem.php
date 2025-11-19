@@ -38,6 +38,11 @@ class MenuItem extends Model
         'site_ids' => 'array',
     ];
 
+    public function determineParentColumnName(): string
+    {
+        return 'parent_menu_item_id';
+    }
+
     protected static function booted()
     {
         static::created(function ($menuItem) {

@@ -2,8 +2,6 @@
 
 namespace Dashed\DashedMenus\Filament\Resources\MenuResource\RelationManagers;
 
-use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Schemas\Schema;
@@ -15,6 +13,7 @@ use Filament\Actions\DeleteBulkAction;
 use Dashed\DashedMenus\Models\MenuItem;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
+use Filament\Infolists\Components\TextEntry;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use Filament\Resources\RelationManagers\RelationManager;
 use Dashed\DashedTranslations\Classes\AutomatedTranslation;
@@ -78,7 +77,11 @@ class MenuItemsRelationManager extends RelationManager
                     ->url(fn (MenuItem $record) => route('filament.dashed.resources.menu-items.edit', [$record])),
                 DeleteAction::make(),
             ])
-            ->toolbarActions(ToolbarActions::getActions())
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ])
             ->headerActions([
                 Action::make('create')
                     ->label('Menu item aanmaken')
@@ -138,7 +141,7 @@ class MenuItemsRelationManager extends RelationManager
             ])
             ->action(function (array $data) {
 
-                foreach($this->ownerRecord->menuItems as $menuItem){
+                foreach ($this->ownerRecord->menuItems as $menuItem) {
                     foreach ($menuItem->translatable as $column) {
                         $textToTranslate = $menuItem->getTranslation($column, $this->activeLocale);
                         foreach ($data['to_locales'] as $locale) {
