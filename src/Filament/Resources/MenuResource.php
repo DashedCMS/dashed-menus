@@ -20,7 +20,6 @@ use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\EditMenu;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\ListMenu;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\CreateMenu;
-use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\MenuItemsTree;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\RelationManagers\MenuItemsRelationManager;
 
 class MenuResource extends Resource
@@ -92,6 +91,7 @@ class MenuResource extends Resource
             MenuItemsRelationManager::class,
         ];
     }
+
     public static function getPages(): array
     {
         return [

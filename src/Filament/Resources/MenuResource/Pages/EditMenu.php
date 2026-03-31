@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedMenus\Filament\Resources\MenuResource\Pages;
 
-use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
