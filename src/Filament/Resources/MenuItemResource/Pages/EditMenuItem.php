@@ -41,13 +41,16 @@ class EditMenuItem extends EditRecord
         return $data;
     }
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
-        return array_merge(parent::getActions(), [
+        return [
             LocaleSwitcher::make(),
-            Action::make('Dupliceer menu item')
+            Action::make('duplicate')
+                ->label('Dupliceer menu item')
+                ->icon('heroicon-o-document-duplicate')
                 ->action('duplicate')
                 ->color('warning'),
+            self::copyAction(),
             Action::make('translate')
                 ->icon('heroicon-m-language')
                 ->label('Vertaal')
@@ -75,7 +78,7 @@ class EditMenuItem extends EditRecord
                 ->label('Terug naar menu')
                 ->url(route('filament.dashed.resources.menus.edit', [$this->record->menu]))
                 ->icon('heroicon-o-arrow-left'),
-        ]);
+        ];
     }
 
     public function getBreadcrumbs(): array

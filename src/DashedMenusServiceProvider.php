@@ -2,8 +2,8 @@
 
 namespace Dashed\DashedMenus;
 
-use Spatie\LaravelPackageTools\Package;
 use Illuminate\Support\Facades\Gate;
+use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class DashedMenusServiceProvider extends PackageServiceProvider
