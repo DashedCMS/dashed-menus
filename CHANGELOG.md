@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.2.1 - 2026-05-07
+
+### Fixed
+- Tree-builder modal opende leeg: bestaande menu-items werden niet geladen. saade's `HasRelationship::getCachedExistingRecords()` valt zonder expliciete schema-binding terug op `app(Model::class)` (een vers Menu zonder id), waardoor het relationship-query niets vindt. `mountUsing()` zet nu expliciet `$schema->model(Menu::class)` en `$schema->record($record)` voordat `$schema->fill()` de relationship-state hydrateert.
+
 ## v4.2.0 - 2026-05-07
 
 ### Changed
