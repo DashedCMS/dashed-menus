@@ -92,7 +92,8 @@ MARKDOWN,
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         $package
-            ->name('dashed-menus');
+            ->name('dashed-menus')
+            ->hasViews();
 
         cms()->builder('plugins', [
             new DashedMenusPlugin(),

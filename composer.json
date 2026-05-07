@@ -17,9 +17,7 @@
     ],
     "require": {
         "php": "^8.3|^8.4",
-        "saade/filament-adjacency-list": "^4.0",
-        "spatie/laravel-package-tools": "^1.16",
-        "staudenmeir/laravel-adjacency-list": "^1.25"
+        "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
         "filament/upgrade": "^4.0",

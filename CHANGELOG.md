@@ -2,6 +2,18 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.3.0 - 2026-05-07
+
+### Breaking
+- Dependency `saade/filament-adjacency-list` en transitieve `staudenmeir/laravel-adjacency-list` verwijderd. Vervangen door de gedeelde `Dashed\DashedCore\Filament\Actions\NestableSortingAction` (vereist `dashed-core` v4.6.0+).
+- `MenuResource::adjacencyListField()` verwijderd.
+- `Menu::menuItemsForTree()` relatie verwijderd.
+- `HasRecursiveRelationships` trait + `getParentKeyName()` + `determineParentColumnName()` verwijderd uit `Menu` en `MenuItem`.
+
+### Changed
+- "Sorteren"-knop verhuist van inline `Section` op de menu edit-pagina naar header-action op de menu-items relation manager.
+- `MenuItemsRelationManager` gebruikt nu `NestableSortingAction::make(query: ..., parentColumn: 'parent_menu_item_id', labelResolver: ..., successMessage: 'Menu volgorde opgeslagen')->after(fn () => Menus::clearCache())`. Lokale `loadTreeForSorting`/`persistTreeOrdering` helpers, eigen blade-views en JS-asset zijn verwijderd.
+
 ## v4.2.5 - 2026-05-07
 
 ### Fixed

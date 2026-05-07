@@ -6,20 +6,19 @@ use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Schemas\Schema;
 use Filament\Actions\DeleteAction;
+use Dashed\DashedMenus\Classes\Menus;
 use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Dashed\DashedCore\Classes\Locales;
 use Filament\Actions\DeleteBulkAction;
-use Dashed\DashedMenus\Models\Menu;
 use Dashed\DashedMenus\Models\MenuItem;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Infolists\Components\TextEntry;
-use Dashed\DashedMenus\Filament\Resources\MenuResource;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use Filament\Resources\RelationManagers\RelationManager;
 use Dashed\DashedTranslations\Classes\AutomatedTranslation;
+use Dashed\DashedCore\Filament\Actions\NestableSortingAction;
 use LaraZeus\SpatieTranslatable\Resources\RelationManagers\Concerns\Translatable;
 
 class MenuItemsRelationManager extends RelationManager
@@ -86,6 +85,12 @@ class MenuItemsRelationManager extends RelationManager
                 ]),
             ])
             ->headerActions([
+                NestableSortingAction::make(
+                    query: MenuItem::query()->where('menu_id', $this->ownerRecord->id),
+                    parentColumn: 'parent_menu_item_id',
+                    labelResolver: fn (MenuItem $m): string => $m->name(false) ?: '#'.$m->id,
+                    successMessage: 'Menu volgorde opgeslagen',
+                )->after(fn () => Menus::clearCache()),
                 Action::make('create')
                     ->label('Menu item aanmaken')
                     ->button()
