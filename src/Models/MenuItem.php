@@ -210,7 +210,9 @@ class MenuItem extends Model
 
     public function childMenuItems(): HasMany
     {
-        return $this->hasMany(self::class, 'parent_menu_item_id')->orderBy('order', 'asc');
+        return $this->hasMany(self::class, 'parent_menu_item_id')
+            ->with('childMenuItems')
+            ->orderBy('order', 'asc');
     }
 
     public function parentMenuItem(): BelongsTo

@@ -11,10 +11,12 @@ use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Filament\Actions\DeleteAction;
 use Dashed\DashedMenus\Models\Menu;
+use Dashed\DashedMenus\Models\MenuItem;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
+use Saade\FilamentAdjacencyList\Forms\Components\AdjacencyList;
 use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\EditMenu;
@@ -58,6 +60,36 @@ class MenuResource extends Resource
                             ->afterStateUpdated(function (Set $set, $state, $livewire) {
                                 $set('name', Str::slug($state));
                             }),
+                    ]),
+                Section::make('Menu structuur')
+                    ->description('Sleep items om de volgorde te wijzigen, of versleep ze onder elkaar om sub-items te maken. Klik op een item om de naam aan te passen; gebruik "Bewerken" voor de volledige item-instellingen (link, blokken, sites).')
+                    ->columnSpanFull()
+                    ->visibleOn('edit')
+                    ->schema([
+                        AdjacencyList::make('parentMenuItems')
+                            ->label('')
+                            ->relationship('parentMenuItems')
+                            ->labelKey('name')
+                            ->childrenKey('childMenuItems')
+                            ->orderColumn('order')
+                            ->maxDepth(-1)
+                            ->modal(false)
+                            ->itemLabel(function (array $item): string {
+                                $id = $item['id'] ?? null;
+                                if ($id) {
+                                    $menuItem = MenuItem::find($id);
+                                    if ($menuItem) {
+                                        return (string) ($menuItem->name(false) ?: '#'.$id);
+                                    }
+                                }
+
+                                return (string) ($item['name'] ?? 'Nieuw item');
+                            })
+                            ->form([
+                                TextInput::make('name')
+                                    ->label('Naam')
+                                    ->required(),
+                            ]),
                     ]),
             ]);
     }
