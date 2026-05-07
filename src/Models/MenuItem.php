@@ -16,14 +16,25 @@ use Dashed\DashedCore\Models\Concerns\HasSearchScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Dashed\LaravelLocalization\Facades\LaravelLocalization;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class MenuItem extends Model
 {
+    // Nodig voor saade/filament-adjacency-list: zorgt dat het Eloquent
+    // Collection-resultaat van $menu->parentMenuItems een Staudenmeir-collection
+    // is met toTree(). Override de parent-key-name omdat onze kolom
+    // parent_menu_item_id heet i.p.v. de default parent_id.
+    use HasRecursiveRelationships;
     use SoftDeletes;
     use HasTranslations;
     use LogsActivity;
     use HasCustomBlocks;
     use HasSearchScope;
+
+    public function getParentKeyName(): string
+    {
+        return 'parent_menu_item_id';
+    }
 
     protected static $logFillable = true;
 

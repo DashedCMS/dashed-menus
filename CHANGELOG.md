@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.1.2 - 2026-05-07
+
+### Fixed
+- `Method Illuminate\Database\Eloquent\Collection::toTree does not exist` op de Menu edit-pagina. saade/filament-adjacency-list roept `->toTree()` aan op het collection-resultaat van de relatie; die methode komt van Staudenmeir's `Collection`. Trait `HasRecursiveRelationships` toegevoegd aan `MenuItem` (de daadwerkelijk zelf-referentiële kant) zodat MenuItem's collections de Staudenmeir-versie gebruiken. `getParentKeyName()` override naar `parent_menu_item_id` zodat de trait's eigen relations onze bestaande FK-kolom gebruiken.
+
 ## v4.1.1 - 2026-05-07
 
 ### Fixed
