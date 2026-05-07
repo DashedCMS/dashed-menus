@@ -17,6 +17,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Saade\FilamentAdjacencyList\Forms\Components\AdjacencyList;
+use Dashed\DashedMenus\Classes\Menus;
 use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use Dashed\DashedMenus\Filament\Resources\MenuResource\Pages\EditMenu;
@@ -110,7 +111,46 @@ class MenuResource extends Resource
                 TextInput::make('name')
                     ->label('Naam')
                     ->required(),
-            ]);
+            ])
+            // saade's default save-loop laat parent_menu_item_id ongemoeid
+            // wanneer een nested item naar top-level wordt verplaatst (of vice
+            // versa). Eigen closure schrijft per node expliciet zowel
+            // parent_menu_item_id (null voor top-level, parent->id voor
+            // nested) als order (1-based index per laag). Cache bevat alle
+            // items dankzij Menu::menuItemsForTree, dus elke state-key vinden
+            // we terug.
+            ->saveRelationshipsUsing(function (AdjacencyList $component, ?array $state): void {
+                if (! is_array($state)) {
+                    return;
+                }
+
+                $records = $component->getCachedExistingRecords();
+
+                $traverse = function (array $items, ?int $parentId) use (&$traverse, $records): void {
+                    $position = 0;
+                    foreach ($items as $itemKey => $itemData) {
+                        $position++;
+                        $record = $records->get($itemKey);
+                        if (! $record) {
+                            continue;
+                        }
+
+                        $record->parent_menu_item_id = $parentId;
+                        $record->order = $position;
+                        $record->save();
+
+                        $children = is_array($itemData) ? ($itemData['children'] ?? []) : [];
+                        if (is_array($children) && $children !== []) {
+                            $traverse($children, (int) $record->id);
+                        }
+                    }
+                };
+
+                $traverse($state, null);
+
+                Menus::clearCache();
+                $component->fillFromRelationship();
+            });
     }
 
     public static function table(Table $table): Table

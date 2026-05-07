@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.2.5 - 2026-05-07
+
+### Fixed
+- Tree-builder bewaarde geen consistente boom-structuur: saade's default save-loop saved top-level items via `Menu::menuItemsForTree()->save($record)` (HasMany op `menu_id`) en raakte `parent_menu_item_id` daarbij niet aan. Nested → top-level verplaatste items hielden hun oude `parent_menu_item_id`. Eigen `saveRelationshipsUsing()`-closure traversteert nu de state per laag en schrijft per record expliciet zowel `parent_menu_item_id` (null voor top-level, parent->id voor nested) als `order` (1-based per laag). Menu cache wordt na opslag geleegd via `Menus::clearCache()`.
+
 ## v4.2.4 - 2026-05-07
 
 ### Fixed
