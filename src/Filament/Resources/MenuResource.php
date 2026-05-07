@@ -61,10 +61,14 @@ class MenuResource extends Resource
                                 $set('name', Str::slug($state));
                             }),
                     ]),
-                Section::make('Menu structuur')
-                    ->description('Sleep items om de volgorde te wijzigen, of versleep ze onder elkaar om sub-items te maken. Klik op een item om de naam aan te passen; gebruik "Bewerken" voor de volledige item-instellingen (link, blokken, sites).')
+                Section::make('Menu structuur ordenen')
+                    ->description('Klik om uit te klappen en items te slepen. Sleep items om de volgorde te wijzigen, of versleep ze onder elkaar om sub-items te maken. Klik op een item om de naam aan te passen; gebruik "Bewerken" voor de volledige item-instellingen (link, blokken, sites).')
+                    ->icon('heroicon-o-bars-arrow-down')
                     ->columnSpanFull()
                     ->visibleOn('edit')
+                    ->collapsible()
+                    ->collapsed()
+                    ->persistCollapsed()
                     ->schema([
                         AdjacencyList::make('parentMenuItems')
                             ->label('')

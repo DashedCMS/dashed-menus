@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.1.3 - 2026-05-07
+
+### Changed
+- Sectie "Menu structuur ordenen" op de Menu edit-pagina is nu standaard ingeklapt (`collapsible()->collapsed()->persistCollapsed()`) met een ordenen-icoon. De drag-and-drop tree neemt zo geen verticale ruimte in tot de admin er expliciet op klikt om uit te klappen; de uitklap-state wordt per gebruiker onthouden.
+
 ## v4.1.2 - 2026-05-07
 
 ### Fixed
