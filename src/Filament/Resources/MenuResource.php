@@ -61,6 +61,17 @@ class MenuResource extends Resource
                                 $set('name', Str::slug($state));
                             }),
                     ]),
+                Section::make('Sorteren')
+                    ->description('Klik om uit te klappen. Sleep items om de volgorde te wijzigen, of versleep ze onder elkaar om sub-items te maken.')
+                    ->icon('heroicon-o-bars-arrow-down')
+                    ->columnSpanFull()
+                    ->visibleOn('edit')
+                    ->collapsible()
+                    ->collapsed()
+                    ->persistCollapsed()
+                    ->schema([
+                        self::adjacencyListField(),
+                    ]),
             ]);
     }
 

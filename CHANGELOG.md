@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.2.3 - 2026-05-07
+
+### Changed
+- Tree-builder weer als inklapbare `Section` "Sorteren" (icoon `bars-arrow-down`) op de Menu edit-pagina, met `collapsible()->collapsed()->persistCollapsed()`. De button-modal-aanpak uit v4.2.0–v4.2.2 vulde de tree niet betrouwbaar met de bestaande items in deze setup; de inline Section werkt direct omdat de form-binding daar onveranderd is. Schema-definitie blijft centraal in `MenuResource::adjacencyListField()` voor hergebruik.
+
 ## v4.2.2 - 2026-05-07
 
 ### Changed

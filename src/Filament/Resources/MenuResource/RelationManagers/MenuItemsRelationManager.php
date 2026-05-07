@@ -86,29 +86,6 @@ class MenuItemsRelationManager extends RelationManager
                 ]),
             ])
             ->headerActions([
-                Action::make('orderMenuTree')
-                    ->label('Menu structuur ordenen')
-                    ->icon('heroicon-o-bars-arrow-down')
-                    ->color('gray')
-                    ->button()
-                    ->modalHeading('Menu structuur')
-                    ->modalDescription('Sleep items om de volgorde te wijzigen, of versleep ze onder elkaar om sub-items te maken. Wijzigingen worden direct opgeslagen.')
-                    ->modalWidth('4xl')
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Sluiten')
-                    ->record(fn () => $this->ownerRecord)
-                    ->schema([
-                        MenuResource::adjacencyListField(),
-                    ])
-                    ->mountUsing(function (Schema $schema, ?Model $record): void {
-                        $owner = $record ?? $this->ownerRecord;
-                        if ($owner) {
-                            $schema->model($owner::class);
-                            $schema->record($owner);
-                        }
-
-                        $schema->fill();
-                    }),
                 Action::make('create')
                     ->label('Menu item aanmaken')
                     ->button()
