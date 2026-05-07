@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.2.2 - 2026-05-07
+
+### Changed
+- Knop "Menu structuur ordenen" verplaatst van de page-header van `EditMenu` naar de header van de `MenuItemsRelationManager` (naast "Menu item aanmaken" / locale-switcher / "Vertaal menu" / "Kopiëren"). De knop staat nu in de visuele context waar de items zelf zichtbaar zijn, wat 'm beter vindbaar maakt. `mountUsing()` valt expliciet terug op `$this->ownerRecord` zodat de schema-binding werkt vanuit de relation-manager.
+
 ## v4.2.1 - 2026-05-07
 
 ### Fixed
