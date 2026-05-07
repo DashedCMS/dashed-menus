@@ -83,11 +83,15 @@ class MenuResource extends Resource
      */
     public static function adjacencyListField(): AdjacencyList
     {
-        return AdjacencyList::make('parentMenuItems')
+        return AdjacencyList::make('menuItemsForTree')
             ->label('')
-            ->relationship('parentMenuItems')
+            ->relationship('menuItemsForTree')
             ->labelKey('name')
-            ->childrenKey('childMenuItems')
+            // children-key staat op 'children' i.p.v. 'childMenuItems' omdat
+            // Staudenmeir's toTree() de hierarchy in setRelation('children', ...)
+            // schrijft. Cache bevat alle items (flat), state krijgt geneste
+            // structuur via toTree, save vindt alle keys terug in de cache.
+            ->childrenKey('children')
             ->orderColumn('order')
             ->maxDepth(-1)
             ->modal(false)

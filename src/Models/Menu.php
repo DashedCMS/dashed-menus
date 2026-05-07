@@ -59,4 +59,16 @@ class Menu extends Model
             ->with('childMenuItems')
             ->orderBy('order', 'asc');
     }
+
+    /**
+     * Flat HasMany over alle items in dit menu, gebruikt door de
+     * AdjacencyList tree-builder. saade caches deze collection en
+     * Staudenmeir's `toTree()` reconstrueert vervolgens de hierarchy
+     * via `parent_menu_item_id` zodat álle keys (ook genest) in de cache
+     * staan en `save()` niet crasht op nested children.
+     */
+    public function menuItemsForTree()
+    {
+        return $this->hasMany(MenuItem::class)->orderBy('order', 'asc');
+    }
 }

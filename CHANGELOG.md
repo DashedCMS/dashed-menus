@@ -2,6 +2,13 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.2.4 - 2026-05-07
+
+### Fixed
+- `Attempt to assign property "order" on null` bij het opslaan van een geneste tree. saade's cache bevatte alleen top-level items (via `Menu::parentMenuItems` met `whereNull(parent_menu_item_id)`), waardoor nested item-keys in de save-state niet matchen met de cache en `$record` `null` is.
+- Nieuwe `Menu::menuItemsForTree()` relatie levert een flat HasMany over álle items in het menu (geen `whereNull`-filter, geen `with('childMenuItems')`). saade vult zijn cache met alle items (top-level én nested), Staudenmeir's `toTree()` reconstrueert de hierarchy via `parent_menu_item_id`, en `childrenKey` is veranderd van `childMenuItems` → `children` zodat de save-loop dezelfde in-memory tree-structuur volgt als de state-build.
+- `Menu::parentMenuItems()` blijft als top-level-filtered relatie bestaan voor de frontend menu-render; alleen de tree-builder gebruikt nu `menuItemsForTree`.
+
 ## v4.2.3 - 2026-05-07
 
 ### Changed
