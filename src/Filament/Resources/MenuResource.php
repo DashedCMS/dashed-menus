@@ -61,40 +61,40 @@ class MenuResource extends Resource
                                 $set('name', Str::slug($state));
                             }),
                     ]),
-                Section::make('Menu structuur ordenen')
-                    ->description('Klik om uit te klappen en items te slepen. Sleep items om de volgorde te wijzigen, of versleep ze onder elkaar om sub-items te maken. Klik op een item om de naam aan te passen; gebruik "Bewerken" voor de volledige item-instellingen (link, blokken, sites).')
-                    ->icon('heroicon-o-bars-arrow-down')
-                    ->columnSpanFull()
-                    ->visibleOn('edit')
-                    ->collapsible()
-                    ->collapsed()
-                    ->persistCollapsed()
-                    ->schema([
-                        AdjacencyList::make('parentMenuItems')
-                            ->label('')
-                            ->relationship('parentMenuItems')
-                            ->labelKey('name')
-                            ->childrenKey('childMenuItems')
-                            ->orderColumn('order')
-                            ->maxDepth(-1)
-                            ->modal(false)
-                            ->itemLabel(function (array $item): string {
-                                $id = $item['id'] ?? null;
-                                if ($id) {
-                                    $menuItem = MenuItem::find($id);
-                                    if ($menuItem) {
-                                        return (string) ($menuItem->name(false) ?: '#'.$id);
-                                    }
-                                }
+            ]);
+    }
 
-                                return (string) ($item['name'] ?? 'Nieuw item');
-                            })
-                            ->form([
-                                TextInput::make('name')
-                                    ->label('Naam')
-                                    ->required(),
-                            ]),
-                    ]),
+    /**
+     * Centrale definitie van het tree-builder schema. Wordt op de EditMenu-page
+     * door een header-action getoond in een modal zodat de form-pagina zelf
+     * compact blijft en de visuele menu-bouwer alleen ruimte inneemt wanneer
+     * de admin er expliciet voor kiest.
+     */
+    public static function adjacencyListField(): AdjacencyList
+    {
+        return AdjacencyList::make('parentMenuItems')
+            ->label('')
+            ->relationship('parentMenuItems')
+            ->labelKey('name')
+            ->childrenKey('childMenuItems')
+            ->orderColumn('order')
+            ->maxDepth(-1)
+            ->modal(false)
+            ->itemLabel(function (array $item): string {
+                $id = $item['id'] ?? null;
+                if ($id) {
+                    $menuItem = MenuItem::find($id);
+                    if ($menuItem) {
+                        return (string) ($menuItem->name(false) ?: '#'.$id);
+                    }
+                }
+
+                return (string) ($item['name'] ?? 'Nieuw item');
+            })
+            ->form([
+                TextInput::make('name')
+                    ->label('Naam')
+                    ->required(),
             ]);
     }
 

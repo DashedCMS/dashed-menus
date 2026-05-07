@@ -2,6 +2,12 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.2.0 - 2026-05-07
+
+### Changed
+- De drag-and-drop tree-builder is nu een modal achter een knop "Menu structuur ordenen" in de header van de Menu edit-pagina (`bars-arrow-down`-icoon, modalWidth `4xl`). De inline `Section` is daardoor verdwenen — de form-pagina zelf is weer compact en de tree neemt alleen ruimte in als de admin de modal opent. Wijzigingen in de tree worden incrementeel door saade gepersisteerd; de modal kent geen "opslaan"-knop, alleen "Sluiten".
+- Het tree-schema is verplaatst naar `MenuResource::adjacencyListField()` zodat zowel de header-action als toekomstige plekken (bv. een dashboard-widget) hetzelfde tree-component kunnen hergebruiken.
+
 ## v4.1.3 - 2026-05-07
 
 ### Changed
