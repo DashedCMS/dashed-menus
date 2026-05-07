@@ -7,9 +7,15 @@ use Dashed\DashedMenus\Classes\Menus;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Menu extends Model
 {
+    // saade/filament-adjacency-list eist de trait op het owner-model van de
+    // AdjacencyList-form-component, ook al is Menu zelf niet zelf-referentieel.
+    // De trait-methodes worden hier niet aangeroepen; alleen de class_uses()
+    // check van saade moet slagen.
+    use HasRecursiveRelationships;
     use SoftDeletes;
     use LogsActivity;
 
