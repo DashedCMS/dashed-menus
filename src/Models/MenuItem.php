@@ -183,18 +183,22 @@ class MenuItem extends Model
         return Cache::remember("menuitem-name-$this->id-" . App::getLocale(), 60 * 60 * 24, function () {
             if (! $this->type || $this->type == 'normal' || $this->type == 'externalUrl') {
                 return $this->name;
-            } else {
-                $modelResult = $this->model::find($this->model_id);
-                $replacementName = '';
-                if ($modelResult) {
-                    $replacementName = $modelResult->name;
-                    if (! $replacementName) {
-                        $replacementName = $modelResult->title;
-                    }
-                }
-
-                return str_replace(':name:', $replacementName, $this->name);
             }
+
+            if (! is_string($this->model) || $this->model === '' || ! class_exists($this->model) || ! $this->model_id) {
+                return $this->name;
+            }
+
+            $modelResult = $this->model::find($this->model_id);
+            $replacementName = '';
+            if ($modelResult) {
+                $replacementName = $modelResult->name;
+                if (! $replacementName) {
+                    $replacementName = $modelResult->title;
+                }
+            }
+
+            return str_replace(':name:', $replacementName, $this->name);
         });
     }
 

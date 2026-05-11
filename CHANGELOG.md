@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-menus` will be documented in this file.
 
+## v4.3.1 - 2026-05-11
+
+### Fixed
+- `MenuItem::name()` crashte met *"Class name must be a valid object or a string"* zodra een MenuItem een `type` had die niet `'normal'`/`'externalUrl'` was maar `$model` leeg/ongeldig of `$model_id` `null` was. De `$this->model::find(...)`-call kreeg dan een non-string class-name. `name()` valt nu netjes terug op `$this->name` als `model` geen bestaande class is of `model_id` ontbreekt.
+
 ## v4.3.0 - 2026-05-07
 
 ### Breaking
