@@ -4,9 +4,11 @@ namespace Dashed\DashedMenus\Models;
 
 use Spatie\Activitylog\LogOptions;
 use Dashed\DashedMenus\Classes\Menus;
+use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Dashed\DashedCore\Classes\Caching\CacheInvalidator;
 
 class Menu extends Model
 {
@@ -27,8 +29,24 @@ class Menu extends Model
             Menus::clearCache();
         });
 
+        static::saved(function ($menu) {
+            if (class_exists(CacheInvalidator::class)) {
+                foreach (Sites::getSites() as $site) {
+                    CacheInvalidator::flushSite($site['id']);
+                }
+            }
+        });
+
         static::deleting(function ($menu) {
             $menu->menuItems()->delete();
+        });
+
+        static::deleted(function ($menu) {
+            if (class_exists(CacheInvalidator::class)) {
+                foreach (Sites::getSites() as $site) {
+                    CacheInvalidator::flushSite($site['id']);
+                }
+            }
         });
     }
 
