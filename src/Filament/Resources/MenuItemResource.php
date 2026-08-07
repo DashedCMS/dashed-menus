@@ -58,7 +58,7 @@ class MenuItemResource extends Resource
 
             $routeModelInputs[] =
                 Select::make("{$key}_id")
-                    ->label("Kies een " . strtolower($routeModel['name']))
+                    ->label(__('Kies een :naam', ['naam' => strtolower($routeModel['name'])]))
                     ->required()
                     ->options(function () use ($routeModel) {
                         $options = [];
@@ -79,7 +79,7 @@ class MenuItemResource extends Resource
 
         $newSchema = array_merge([
             Select::make('menu_id')
-                ->label('Kies een menu')
+                ->label(__('Kies een menu'))
                 ->searchable()
                 ->preload()
                 ->relationship('menu', 'name')
@@ -90,13 +90,13 @@ class MenuItemResource extends Resource
                 ->reactive()
                 ->required(),
             Select::make('parent_menu_item_id')
-                ->label('Kies een bovenliggend menu item')
+                ->label(__('Kies een bovenliggend menu item'))
                 ->relationship('parentMenuItem', 'name')
                 ->searchable()
                 ->preload()
                 ->getOptionLabelFromRecordUsing(fn ($record) => $record->name()),
             Select::make('type')
-                ->label('Kies een type')
+                ->label(__('Kies een type'))
                 ->searchable()
                 ->preload()
                 ->options(array_merge([
@@ -109,26 +109,26 @@ class MenuItemResource extends Resource
                 ->multiple()
                 ->searchable()
                 ->preload()
-                ->label('Actief op sites')
+                ->label(__('Actief op sites'))
                 ->options(collect(Sites::getSites())->pluck('name', 'id')->toArray())
                 ->hidden(function () {
                     return ! (Sites::getAmountOfSites() > 1);
                 })
                 ->required(),
             TextInput::make('order')
-                ->label('Volgorde')
+                ->label(__('Volgorde'))
                 ->required()
                 ->default(1)
                 ->numeric()
                 ->reactive()
                 ->maxValue(10000),
             TextInput::make('name')
-                ->label('Name')
+                ->label(__('Name'))
                 ->required()
                 ->maxLength(255)
                 ->reactive(),
             TextInput::make('url')
-                ->label('URL')
+                ->label(__('URL'))
                 ->required()
                 ->maxLength(1000)
                 ->reactive()
@@ -139,7 +139,7 @@ class MenuItemResource extends Resource
 
         return $schema
             ->schema([
-                Section::make('Menu')
+                Section::make(__('Menu'))
                     ->columnSpanFull()
                     ->schema(array_merge($newSchema, static::customBlocksTab('menuItemBlocks')))
                     ->columns(2),
@@ -151,15 +151,15 @@ class MenuItemResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Naam')
+                    ->label(__('Naam'))
                     ->sortable()
                     ->getStateUsing(fn ($record) => $record->name())
                     ->searchable(query: SearchQuery::make()),
                 TextColumn::make('url')
-                    ->label('URL')
+                    ->label(__('URL'))
                     ->getStateUsing(fn ($record) => str_replace(url('/'), '', $record->getUrl())),
                 TextColumn::make('site_ids')
-                    ->label('Sites')
+                    ->label(__('Sites'))
                     ->getStateUsing(fn ($record) => implode(' | ', $record->site_ids)),
             ])
             ->recordActions([

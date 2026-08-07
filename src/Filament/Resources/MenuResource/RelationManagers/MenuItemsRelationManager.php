@@ -52,7 +52,7 @@ class MenuItemsRelationManager extends RelationManager
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Naam')
+                    ->label(__('Naam'))
                     ->sortable()
                     ->getStateUsing(fn ($record) => $record->name(false))
                     ->searchable(),
@@ -60,10 +60,10 @@ class MenuItemsRelationManager extends RelationManager
 //                    ->label('Bovenliggende item')
 //                    ->sortable(),
                 TextColumn::make('url')
-                    ->label('URL')
+                    ->label(__('URL'))
                     ->getStateUsing(fn ($record) => str_replace(url('/'), '', $record->getUrl())),
                 TextColumn::make('site_ids')
-                    ->label('Sites')
+                    ->label(__('Sites'))
                     ->getStateUsing(fn ($record) => implode(' | ', $record->site_ids))
                     ->searchable(),
             ])
@@ -73,7 +73,7 @@ class MenuItemsRelationManager extends RelationManager
             ->reorderable('order')
             ->recordActions([
                 Action::make('edit')
-                    ->label('Bewerken')
+                    ->label(__('Bewerken'))
                     ->icon('heroicon-o-pencil-square')
                     ->button()
                     ->url(fn (MenuItem $record) => route('filament.dashed.resources.menu-items.edit', [$record])),
@@ -92,13 +92,13 @@ class MenuItemsRelationManager extends RelationManager
                     successMessage: 'Menu volgorde opgeslagen',
                 )->after(fn () => Menus::clearCache()),
                 Action::make('create')
-                    ->label('Menu item aanmaken')
+                    ->label(__('Menu item aanmaken'))
                     ->button()
                     ->url(fn () => route('filament.dashed.resources.menu-items.create') . '?menuId=' . $this->ownerRecord->id),
                 LocaleSwitcher::make(),
                 Action::make('translate')
                     ->icon('heroicon-m-language')
-                    ->label('Vertaal menu')
+                    ->label(__('Vertaal menu'))
                     ->visible(AutomatedTranslation::automatedTranslationsEnabled())
                     ->schema([
                         Select::make('from_locale')
@@ -106,13 +106,13 @@ class MenuItemsRelationManager extends RelationManager
                             ->preload()
                             ->searchable()
                             ->required()
-                            ->label('Vanaf taal'),
+                            ->label(__('Vanaf taal')),
                         Select::make('to_locales')
                             ->options(Locales::getLocalesArray())
                             ->preload()
                             ->searchable()
                             ->required()
-                            ->label('Naar talen')
+                            ->label(__('Naar talen'))
                             ->multiple(),
                     ])
                     ->action(function (array $data) {
@@ -121,7 +121,7 @@ class MenuItemsRelationManager extends RelationManager
                         }
 
                         Notification::make()
-                            ->title("Menu wordt vertaald")
+                            ->title(__("Menu wordt vertaald"))
                             ->success()
                             ->send();
                     }),
@@ -133,7 +133,7 @@ class MenuItemsRelationManager extends RelationManager
     {
         return Action::make('copy')
             ->icon('heroicon-o-document-duplicate')
-            ->label('Kopiëren')
+            ->label(__('Kopiëren'))
             ->visible(count(Locales::getLocalesArray()) > 1)
             ->schema([
                 TextEntry::make('description')
@@ -144,7 +144,7 @@ class MenuItemsRelationManager extends RelationManager
                     ->searchable()
                     ->default(fn ($livewire) => collect(Locales::getLocalesArrayWithoutCurrent($livewire->activeLocale))->keys()->toArray())
                     ->required()
-                    ->label('Naar talen')
+                    ->label(__('Naar talen'))
                     ->multiple(),
             ])
             ->action(function (array $data) {
@@ -176,7 +176,7 @@ class MenuItemsRelationManager extends RelationManager
                 }
 
                 Notification::make()
-                    ->title('Item is gekopieerd naar andere talen')
+                    ->title(__('Item is gekopieerd naar andere talen'))
                     ->success()
                     ->send();
 

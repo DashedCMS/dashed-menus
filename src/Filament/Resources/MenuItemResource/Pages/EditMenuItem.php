@@ -46,14 +46,14 @@ class EditMenuItem extends EditRecord
         return [
             LocaleSwitcher::make(),
             Action::make('duplicate')
-                ->label('Dupliceer menu item')
+                ->label(__('Dupliceer menu item'))
                 ->icon('heroicon-o-document-duplicate')
                 ->action('duplicate')
                 ->color('warning'),
             self::copyAction(),
             Action::make('translate')
                 ->icon('heroicon-m-language')
-                ->label('Vertaal')
+                ->label(__('Vertaal'))
                 ->visible(AutomatedTranslation::automatedTranslationsEnabled())
                 ->schema([
                     Select::make('to_locales')
@@ -62,20 +62,20 @@ class EditMenuItem extends EditRecord
                         ->searchable()
                         ->default(fn ($livewire) => collect(Locales::getLocalesArrayWithoutCurrent($livewire->activeLocale))->keys()->toArray())
                         ->required()
-                        ->label('Naar talen')
+                        ->label(__('Naar talen'))
                         ->multiple(),
                 ])
                 ->action(function (array $data) {
                     AutomatedTranslation::translateModel($this->record, $this->activeLocale, $data['to_locales'], ['name']);
 
                     Notification::make()
-                        ->title("Menu item wordt vertaald")
+                        ->title(__("Menu item wordt vertaald"))
                         ->success()
                         ->send();
                 }),
             DeleteAction::make(),
             Action::make('return')
-                ->label('Terug naar menu')
+                ->label(__('Terug naar menu'))
                 ->url(route('filament.dashed.resources.menus.edit', [$this->record->menu]))
                 ->icon('heroicon-o-arrow-left'),
         ];

@@ -46,10 +46,10 @@ class MenuResource extends Resource
     {
         return $schema
             ->schema([
-                Section::make('Menu')->columnSpanFull()
+                Section::make(__('Menu'))->columnSpanFull()
                     ->schema([
                         TextInput::make('name')
-                            ->label('Name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255)
                             ->unique('dashed__menus', 'name', fn ($record) => $record)
@@ -67,11 +67,11 @@ class MenuResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Naam')
+                    ->label(__('Naam'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('amount_of_menu_items')
-                    ->label('Aantal menu items')
+                    ->label(__('Aantal menu items'))
                     ->getStateUsing(fn ($record) => $record->menuItems->count()),
             ])
             ->filters([
