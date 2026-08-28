@@ -3,8 +3,8 @@
 namespace Dashed\DashedMenus\Models;
 
 use Spatie\Activitylog\LogOptions;
-use Dashed\DashedMenus\Classes\Menus;
 use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedMenus\Classes\Menus;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
