@@ -85,6 +85,29 @@ MARKDOWN,
                 'Zet externe links bij voorkeur open in een nieuw tabblad.',
             ],
         );
+
+        self::registreerVertaalbaren();
+    }
+
+    /**
+     * Menu-items aanmelden bij het vertaalstatus-overzicht.
+     *
+     * Statisch, naar het voorbeeld van registreerBewaartermijnen() in
+     * dashed-core. Guarded op class_exists: dashed-menus kent
+     * dashed-translations niet als afhankelijkheid.
+     */
+    public static function registreerVertaalbaren(): void
+    {
+        if (! class_exists(\Dashed\DashedTranslations\Classes\Translatables\TranslatableRegistry::class)) {
+            return;
+        }
+
+        \Dashed\DashedTranslations\Classes\Translatables\TranslatableRegistry::register(
+            \Dashed\DashedTranslations\Classes\Translatables\Translatable::make(\Dashed\DashedMenus\Models\MenuItem::class)
+                ->label(__('Menu-items'))
+                ->group(__('Inhoud'))
+                ->urlVia(\Dashed\DashedMenus\Filament\Resources\MenuItemResource::class)
+        );
     }
 
     public function configurePackage(Package $package): void
