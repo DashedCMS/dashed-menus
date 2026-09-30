@@ -16,6 +16,7 @@ use Dashed\DashedCore\Models\Concerns\HasSearchScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Dashed\DashedCore\Classes\Caching\CacheInvalidator;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Dashed\LaravelLocalization\Facades\LaravelLocalization;
 
 class MenuItem extends Model
@@ -25,6 +26,7 @@ class MenuItem extends Model
     use LogsActivity;
     use HasCustomBlocks;
     use HasSearchScope;
+    use HasFactory;
 
     protected static $logFillable = true;
 
@@ -231,5 +233,10 @@ class MenuItem extends Model
     public function parentMenuItem(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_menu_item_id');
+    }
+
+    protected static function newFactory(): \Dashed\DashedMenus\Database\Factories\MenuItemFactory
+    {
+        return \Dashed\DashedMenus\Database\Factories\MenuItemFactory::new();
     }
 }

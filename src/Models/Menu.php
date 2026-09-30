@@ -8,12 +8,14 @@ use Dashed\DashedMenus\Classes\Menus;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Dashed\DashedCore\Classes\Caching\CacheInvalidator;
 
 class Menu extends Model
 {
     use SoftDeletes;
     use LogsActivity;
+    use HasFactory;
 
     protected static $logFillable = true;
 
@@ -70,5 +72,10 @@ class Menu extends Model
             ->whereNull('parent_menu_item_id')
             ->with('childMenuItems')
             ->orderBy('order', 'asc');
+    }
+
+    protected static function newFactory(): \Dashed\DashedMenus\Database\Factories\MenuFactory
+    {
+        return \Dashed\DashedMenus\Database\Factories\MenuFactory::new();
     }
 }
