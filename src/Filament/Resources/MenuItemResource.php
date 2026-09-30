@@ -11,6 +11,7 @@ use Dashed\DashedCore\Classes\Sites;
 use Filament\Forms\Components\Select;
 use Dashed\DashedMenus\Models\MenuItem;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -161,6 +162,9 @@ class MenuItemResource extends Resource
                 TextColumn::make('site_ids')
                     ->label(__('Sites'))
                     ->getStateUsing(fn ($record) => implode(' | ', $record->site_ids)),
+            ])
+            ->filters([
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make()
