@@ -14,6 +14,7 @@ use Dashed\DashedMenus\Models\Menu;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Schemas\Components\Utilities\Set;
 use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
@@ -75,7 +76,7 @@ class MenuResource extends Resource
                     ->getStateUsing(fn ($record) => $record->menuItems->count()),
             ])
             ->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 EditAction::make()
