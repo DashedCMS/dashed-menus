@@ -123,6 +123,7 @@ MARKDOWN,
 
         $package
             ->name('dashed-menus')
+            ->hasTranslations()
             ->hasViews();
 
         cms()->builder('plugins', [
