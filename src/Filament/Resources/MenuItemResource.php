@@ -26,6 +26,7 @@ use Dashed\DashedMenus\Filament\Resources\MenuItemResource\Pages\CreateMenuItem;
 
 class MenuItemResource extends Resource
 {
+    use \Dashed\DashedCore\Filament\Concerns\TranslatesResourceLabels;
     use Translatable;
     use HasCustomBlocksTab;
 

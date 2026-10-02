@@ -25,6 +25,7 @@ use Dashed\DashedMenus\Filament\Resources\MenuResource\RelationManagers\MenuItem
 
 class MenuResource extends Resource
 {
+    use \Dashed\DashedCore\Filament\Concerns\TranslatesResourceLabels;
     use Translatable;
 
     protected static ?string $model = Menu::class;
