@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Dashed\DashedCore\Models\Concerns\HasSearchScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
-use Dashed\DashedCore\Classes\Caching\CacheInvalidator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Dashed\DashedCore\Classes\Caching\CacheInvalidator;
 use Dashed\LaravelLocalization\Facades\LaravelLocalization;
 
 class MenuItem extends Model
