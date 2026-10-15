@@ -3,13 +3,11 @@
 namespace Dashed\DashedMenus\Models;
 
 use Spatie\Activitylog\LogOptions;
-use Dashed\DashedCore\Classes\Sites;
 use Dashed\DashedMenus\Classes\Menus;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Dashed\DashedCore\Classes\Caching\CacheInvalidator;
 
 class Menu extends Model
 {
@@ -23,33 +21,15 @@ class Menu extends Model
 
     protected static function booted()
     {
-        static::created(function ($menu) {
-            Menus::clearCache();
-        });
-
-        static::updated(function ($menu) {
-            Menus::clearCache();
-        });
-
-        static::saved(function ($menu) {
-            if (class_exists(CacheInvalidator::class)) {
-                foreach (Sites::getSites() as $site) {
-                    CacheInvalidator::flushSite($site['id']);
-                }
-            }
-        });
+        // saved dekt created, updated en restored; de response-cache van elke
+        // site gaat mee in Menus::clearCache().
+        static::saved(fn () => Menus::clearCache());
 
         static::deleting(function ($menu) {
             $menu->menuItems()->delete();
         });
 
-        static::deleted(function ($menu) {
-            if (class_exists(CacheInvalidator::class)) {
-                foreach (Sites::getSites() as $site) {
-                    CacheInvalidator::flushSite($site['id']);
-                }
-            }
-        });
+        static::deleted(fn () => Menus::clearCache());
     }
 
     protected $casts = [

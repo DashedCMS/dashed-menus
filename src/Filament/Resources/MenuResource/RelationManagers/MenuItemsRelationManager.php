@@ -71,6 +71,9 @@ class MenuItemsRelationManager extends RelationManager
                 //
             ])
             ->reorderable('order')
+            // Slepen is een massa-update zonder Eloquent-events, dus zonder deze
+            // haak hield de website de oude volgorde tot iemand iets anders opsloeg.
+            ->afterReordering(fn () => Menus::clearCache())
             ->recordActions([
                 Action::make('edit')
                     ->label(__('Bewerken'))

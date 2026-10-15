@@ -3,6 +3,8 @@
 namespace Dashed\DashedMenus;
 
 use Illuminate\Support\Facades\Gate;
+use Dashed\DashedMenus\Classes\Menus;
+use Illuminate\Support\Facades\Event;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -12,6 +14,11 @@ class DashedMenusServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
+        // Een menu-item naar een pagina, product of categorie cachet naam en
+        // url van dat model; wijzigt het model, dan moet het menu opnieuw.
+        Event::listen('eloquent.saved: *', fn (string $event, array $data) => Menus::clearCacheForLinkedModel($data[0]));
+        Event::listen('eloquent.deleted: *', fn (string $event, array $data) => Menus::clearCacheForLinkedModel($data[0], deleted: true));
+
         Gate::policy(\Dashed\DashedMenus\Models\Menu::class, \Dashed\DashedMenus\Policies\MenuPolicy::class);
         Gate::policy(\Dashed\DashedMenus\Models\MenuItem::class, \Dashed\DashedMenus\Policies\MenuItemPolicy::class);
 

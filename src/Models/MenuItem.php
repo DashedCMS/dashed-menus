@@ -43,21 +43,11 @@ class MenuItem extends Model
 
     protected static function booted()
     {
-        static::created(function ($menuItem) {
-            Menus::clearCache();
-        });
-
-        static::updated(function ($menuItem) {
-            Menus::clearCache();
-        });
-
-        static::saved(function ($menuItem) {
-            if (class_exists(CacheInvalidator::class)) {
-                foreach (Sites::getSites() as $site) {
-                    CacheInvalidator::flushSite($site['id']);
-                }
-            }
-        });
+        // saved dekt created, updated en restored; de response-cache van elke
+        // site gaat mee in Menus::clearCache(). Let op: slepen in de volgorde
+        // (Filament reorderable) is een massa-update zonder deze events, die
+        // hangt aan afterReordering() in het relatiebeheer.
+        static::saved(fn () => Menus::clearCache());
 
         static::deleting(function ($menuItem) {
             foreach ($menuItem->getChilds() as $child) {
@@ -65,14 +55,7 @@ class MenuItem extends Model
             }
         });
 
-        static::deleted(function ($menuItem) {
-            Menus::clearCache();
-            if (class_exists(CacheInvalidator::class)) {
-                foreach (Sites::getSites() as $site) {
-                    CacheInvalidator::flushSite($site['id']);
-                }
-            }
-        });
+        static::deleted(fn () => Menus::clearCache());
     }
 
     public function getActivitylogOptions(): LogOptions
@@ -166,7 +149,7 @@ class MenuItem extends Model
 
     public function getUrl()
     {
-        return Cache::remember("menuitem-url-$this->id-" . App::getLocale(), 60 * 60 * 24, function () {
+        return Cache::remember(Menus::cacheKey("menuitem-url-$this->id-" . App::getLocale()), 60 * 60 * 24, function () {
             if (! $this->type || $this->type == 'normal' || $this->type == 'externalUrl') {
                 if ($this->url && (parse_url($this->url)['host'] ?? request()->getHttpHost()) != request()->getHttpHost()) {
                     return $this->url;
@@ -192,11 +175,13 @@ class MenuItem extends Model
 
     public function name(bool $cache = true): ?string
     {
+        $key = Menus::cacheKey("menuitem-name-$this->id-" . App::getLocale());
+
         if (! $cache) {
-            Cache::forget("menuitem-name-$this->id-" . App::getLocale());
+            Cache::forget($key);
         }
 
-        return Cache::remember("menuitem-name-$this->id-" . App::getLocale(), 60 * 60 * 24, function () {
+        return Cache::remember($key, 60 * 60 * 24, function () {
             if (! $this->type || $this->type == 'normal' || $this->type == 'externalUrl') {
                 return $this->name;
             }
